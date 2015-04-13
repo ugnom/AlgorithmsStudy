@@ -122,6 +122,9 @@ def binary_add(a, b) :
 	return c
 
 '''
+>>> l = c.Bin.l
+>>> o = c.Bin.o
+
 >>> a = [o,o,o,o,l,l,l,l]
 >>> b = [o,o,l,l,o,o,o,l]
 >>> c.binary_add(a, b)
@@ -134,9 +137,64 @@ def binary_add(a, b) :
 '''
 
 ################################################################################
-## マージソート
 
-def merge_sort (input) : 
+## 2.2-1　(n**3) / 1000 - 100(n**2) - 100n + 3をΘで表現
+'''
+n**2以下の項については丸められるため、Θ(n**3)といえる
+'''
+
+## 2.2-2 選択ソートを実装する。
+
+## 選択ソート
+def select_sort(input) :
+	output = input
+	for i in range(len(output)-1) :
+		minimum = output[i]
+		min_index = i
+		for j in range(i, len(output)) :
+			if minimum > output[j] :
+				minimum = output[j]
+				min_index = j
+		output[min_index] = output[i]
+		output[i] = minimum
+	return output
+
+'''
+>>> c2.select_sort([8,3,5,7,4,2,9,1])
+[1, 2, 3, 4, 5, 7, 8, 9]
+'''
+'''
+ループ不変式：
+不変条件：		0からiまでの項についてソートが完了している
+初期条件：		0から0まですなわち空のリストについては自明
+ループ内条件：	0から(i-1)までソートが完了していると仮定する。ループ内では残りのリストの中の最小値を探索し、最終的に[i]の値と交換する。
+			iからリストの最後には、必ず0から(i-1)までの値よりも大きい値しか入っていないので、0からiまでのソートが完了したといえる。
+終了条件：		i=(n-1)までを捜査して終了。このときn-1までのソートが完了しており、[n]には最大の値が入っているため、nの捜査はする必要がない
+
+'''
+
+## 2.2-3 順次探索法（2.1-3)の平均実行時間と最悪実行時間について
+'''
+平均実行時間：n/2 --> Θ(n)
+実際の実行時間は、vにマッチする値の場所に依存するため、
+				確率		実行時間
+[0]に存在する：		100/n　	1
+[1]に存在する：		100/n 	2
+...
+[n-2]に存在する：	100/n 	n-1
+[n-1]に存在する：	100/n 	n
+つまり実行時間の期待値はおおよそ、
+((100/n * 1) + (100/n * 2)+ ... (100/n * (n-1)) + (100/n * (n))) / n = n/2
+
+最悪実行時間
+最悪実行時間は、vが(n-1)に存在するときなので、nとなる
+'''
+
+
+################################################################################
+## マージソート 番兵付き
+
+def merge_sort (input, logging=False) : 
 	# defining recursive function internally used for separation of input
 	def merge_sort_loop (input, p, r) : 
 		# defining merge function internally used to sort the small sets
@@ -155,7 +213,11 @@ def merge_sort (input) :
 		if p < r :
 			q = int((p + r) / 2)
 			merge_sort_loop (input, p, q)
+			if(logging == True) :
+				print("LEFT:\t" + str(input[p:q+1]))
 			merge_sort_loop (input, q+1, r)
+			if(logging == True) :
+				print("RIGHT:\t" + str(input[q+1:r+1]))
 			merge (input, p, q, r)
 		
 	output = input 
@@ -163,4 +225,113 @@ def merge_sort (input) :
 
 	return output
 
+
+################################################################################
+## 2.3-1 [3,41,52,26,38,57,9,49]のソート
+'''
+>>> c2.merge_sort([3,41,52,26,38,57,9,49], True)
+LEFT:   [3]
+RIGHT:  [41]
+LEFT:   [3, 41]
+LEFT:   [52]
+RIGHT:  [26]
+RIGHT:  [26, 52]
+LEFT:   [3, 26, 41, 52]
+LEFT:   [38]
+RIGHT:  [57]
+LEFT:   [38, 57]
+LEFT:   [9]
+RIGHT:  [49]
+RIGHT:  [9, 49]
+RIGHT:  [9, 38, 49, 57]
+[3, 9, 26, 38, 41, 49, 52, 57]
+'''
+
+## 2.3-2 マージソート 番兵なし
+def merge_sort2 (input, logging=False) : 
+	# defining recursive function internally used for separation of input
+	def merge_sort_loop (input, p, r) : 
+		# defining merge function internally used to sort the small sets
+		def merge (input, p, q, r) :
+			left = input[p:q+1]
+			right = input[q+1:r+1]
+			i = 0
+			j = 0
+			for k in range(p, r+1) :
+				if left[i] <= right[j] :
+					input[k] = left[i]
+					i = i + 1
+				elif left[i] > right[j] :
+					input[k] = right[j]
+					j = j + 1
+				#leftかrightが終わったら違うほうを差し込む
+				if (i >= len(left) ) :
+					if logging == True :
+						print("left is done, putting :" + str(right[j:len(right)]))
+					for l in range(k+1, r+1) :
+						input[l] = right[j]
+						j = j + 1
+					break;
+				elif(j >= len(right)) :
+					if logging == True :
+						print("right is done, putting :" + str(left[i:len(left)]))
+					for l in range(k+1, r+1) :
+						input[l] = left[i]
+						i = i+1
+					break;
+		if p < r :
+			q = int((p + r) / 2)
+			merge_sort_loop (input, p, q)
+			if(logging == True) :
+				print("LEFT:\t" + str(input[p:q+1]))
+			merge_sort_loop (input, q+1, r)
+			if(logging == True) :
+				print("RIGHT:\t" + str(input[q+1:r+1]))
+			merge (input, p, q, r)
+		
+	output = input 
+	merge_sort_loop (output, 0, len(output)-1)
+
+	return output
+
+'''
+2.3-3 nが2のべき乗のとき、以下の漸化式の解がT(n) = n lg nであることを数学的帰納法を用いて示せ。 
+	T(n) = 	{ 2 			n = 2のとき
+			{ 2T(n/2) + n 	k > 1に対してn = 2**kのとき
+
+	n = 2のとき、 2 lg 2 = 2なので確かにT(n)を満たす
+	T(2**k) = T(n) がn lg nを満たすと仮定すると、T(2**(k+1)) = T(2n)は、
+
+	T(2n) = 2T(n) + n
+		  = 2(n lg n) + 2n
+		  = lg (n**2n) + lg (2**2n)
+		  = lg ((n**2n) * (2**2n))
+		  = lg (2n**2n)
+		  = 2n lg 2n
+	よってnのとき条件を満たすと仮定すると2nも条件を満たす。
+
+	数学的帰納法より、すべてのn = 2**kに対して漸化式が成り立つことが示された。
+'''
+
+## 2.3-4 挿入ソートの再帰版
+
+def r_insertion_sort (input, logging=False, comp=compare_gt) :
+	def sort_loop(input, j) :
+		if j > 0 :
+			sort_loop(input, j-1)
+		key = input[j]
+		i = j - 1
+		while (i >= 0) & comp(input[i] , key)  : 
+			input[i + 1] = input[i]
+			i = i - 1
+		input[i+1] = key
+
+	output = input
+	sort_loop(output, len(output)-1)
+	return output
+
+'''
+T(n) = 	{ Θ(1) 				n=1のとき
+		{ T(n-1) + O(n)		その他
+'''
 
