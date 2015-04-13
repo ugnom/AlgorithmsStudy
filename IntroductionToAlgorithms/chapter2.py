@@ -1,4 +1,5 @@
 import sys
+from enum import IntEnum
 
 ################################################################################
 ## 挿入ソート Logging オプション付き
@@ -28,8 +29,6 @@ def insertion_sort (input, logging=False, comp=compare_gt) :
 		output[i+1] = key
 		if logging == True : 
 			print(" --> " + str(input) + "[(i+1)=" + str(i+1) + "] <- key=" + str(key))
-
-		
 	return output
 
 ################################################################################
@@ -87,14 +86,52 @@ def linear_search (input, v) :
 >>> c.linear_search([1,2,3,4,5,6,7], 9)
 -1
 '''
+'''
+初期条件：		空の配列には、vの値は入っていない
+ループ内条件：	0から(i-1)までの配列にv入っていないとするとき、[i]==vだとすると終了。
+			そうでない場合、[i]はvでないので0からiまでの配列にvが入っていないと保証できる。
+終了条件：		配列内のすべての値をチェックするとループ終了。結果はNIL(-1)を返す。
+'''
+
+## 2.1-4 	二つのn要素配列AとBに蓄えられた2つのnビットの2進数の輪を求める。
+##			(n+1)要素配列Cに和を蓄える。
+# 二進数型
+class Bin(IntEnum) :
+	l = 1
+	o = 0
+
+def binary_add(a, b) :
+	c = []
+	carry = Bin.o
+	for i in reversed(range(len(a))) :
+		#１の本数で該当ビットの値とキャリーをパターンわけする
+		l_count = a[i] + b[i] + carry
+		if l_count == 0 :
+			c.insert(0, Bin.o)
+			carry = Bin.o
+		elif l_count == 1 :
+			c.insert(0, Bin.l)
+			carry = Bin.o
+		elif l_count == 2 :
+			c.insert(0, Bin.o)
+			carry = Bin.l
+		else :
+			c.insert(0, Bin.l)
+			carry = Bin.l
+	c.insert(0, carry)
+	return c
 
 '''
-初期条件：	空の配列には、vの値は入っていない
-ループ内条件：0から(i-1)までの配列にv入っていないとするとき、[i]==vだとすると終了。
-			[i]はvでないので0からiまでの配列にvが入っていないと保証できる。
-終了条件：	配列内のすべての値をチェックするとループ終了。結果はNILを返す。
-'''
+>>> a = [o,o,o,o,l,l,l,l]
+>>> b = [o,o,l,l,o,o,o,l]
+>>> c.binary_add(a, b)
+[<Bin.o: 0>, <Bin.o: 0>, <Bin.l: 1>, <Bin.o: 0>, <Bin.o: 0>, <Bin.o: 0>, <Bin.o: 0>, <Bin.o: 0>, <Bin.o: 0>]
 
+>>> a = [l,l,l,l,l,l,l,l]
+>>> b = [o,o,o,o,o,o,o,l]
+>>> c.binary_add(a, b)
+[<Bin.l: 1>, <Bin.o: 0>, <Bin.o: 0>, <Bin.o: 0>, <Bin.o: 0>, <Bin.o: 0>, <Bin.o: 0>, <Bin.o: 0>, <Bin.o: 0>]
+'''
 
 ################################################################################
 ## マージソート

@@ -69,7 +69,7 @@ month = day * 30
 year = day * 365
 century = year * 100
 
-def calc_steps(func) :
+def calc_size(func) :
 	print("1秒 :\t" + str (func(sec)))
 	print("1分 :\t" + str (func(minute)))
 	print("1時間 :\t" + str (func(hour)))
@@ -83,7 +83,7 @@ def calc_steps(func) :
 ## t秒で実行できるステップ数を求めるのでt = f(n)の逆関数を考える
 ## t = lg n -->	n = 2**t
 def calc_lg_n1() :
-	calc_steps(lambda t : (2**t))
+	calc_size(lambda t : (2**t))
 
 def calc_lg_n2() :
 	calc_by_actual(lambda n : mth.floor(mth.log(n, 2)), 10000000000000000000000000)
@@ -95,7 +95,7 @@ def calc_lg_n2() :
 
 ### t = sqrt n 	-->		n = t**2 (t >= 0) ###
 def calc_sqrt_n() :
-	calc_steps(lambda t : (t**2))
+	calc_size(lambda t : (t**2))
 
 ##　計算結果
 ## >>> c.calc_sqrt_n()
@@ -109,7 +109,7 @@ def calc_sqrt_n() :
 
 ### t = n --> n = t ###
 def calc_n() : 
-	calc_steps(lambda t : (t))
+	calc_size(lambda t : (t))
 
 ## 計算結果
 ## >>> c.calc_n()
@@ -152,7 +152,7 @@ def calc_n_lg_n() :
 
 ### n**2 		--> 	sqrt n
 def calc_n_square() :
-	calc_steps(lambda t : mth.floor(mth.sqrt(t)))
+	calc_size(lambda t : mth.floor(mth.sqrt(t)))
 
 ## >>> c.calc_n_square()
 ## 1秒 :		1000
@@ -165,7 +165,7 @@ def calc_n_square() :
 
 ### n**3 --> n**(1/3)
 def calc_n_cube() :
-	calc_steps(lambda t : mth.floor(t**(1/3)))
+	calc_size(lambda t : mth.floor(t**(1/3)))
 
 ## >>> c.calc_n_cube()
 ## 1秒 :		99
@@ -178,7 +178,7 @@ def calc_n_cube() :
 
 ### 2**n --> lg n
 def calc_nth_power_of_two() :
-	calc_steps(lambda t : mth.floor(mth.log(t, 2)))
+	calc_size(lambda t : mth.floor(mth.log(t, 2)))
 
 ## >>> c.calc_nth_power_of_two()
 ## 1秒 :		19
