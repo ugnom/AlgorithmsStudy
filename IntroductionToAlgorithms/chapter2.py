@@ -335,3 +335,71 @@ T(n) = 	{ Θ(1) 				n=1のとき
 		{ T(n-1) + O(n)		その他
 '''
 
+##2.3-5 ソート済みの配列に対して２分探索をする
+def binary_search (sorted_input, v) :
+	def search_loop(input, p, r, v) :
+		if p == r :
+			if input[p] == v :
+				return p
+			else :
+				return -1
+		q = int((p + r) / 2)
+		if input[q] >= v :
+			return search_loop(input, p, q, v)
+		elif input[q] < v :
+			return search_loop(input, q+1, r, v)
+	return search_loop(sorted_input, 0, len(sorted_input)-1, v)
+
+'''
+２分探索
+T(n) = 	{ 1 			n = 1
+		{ T(n/2) + 1 	n >= 2
+
+'''
+
+##2.3-7 整数の集合から２個を取ってxと等しくなるものが存在するかを決定する。θ(n lg n)でよろしく。
+def create_list_without (input, i) :
+	out = list(input) 
+	out.pop(i)
+	return out
+
+def sum_search (input, x) :
+	#まずソートしてみる
+	result = False
+	sorted_list = merge_sort(input) 
+	#多分θ(n lg n)
+	for i in range(len(sorted_list)) :
+		i_list = create_list_without(input, i)
+		r = binary_search(i_list, (x-sorted_list[i]))
+		print("i=" + str(i) + " i_list=" + str(i_list) + " r=" + str(r))
+		if r == -1 : 
+			continue
+		else :
+			result = True
+			break
+	return result
+
+
+### 章末問題 ###
+## 2-1 
+'''
+a. 
+b.
+c.
+d.
+'''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
