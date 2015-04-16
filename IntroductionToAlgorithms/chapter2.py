@@ -31,6 +31,28 @@ def insertion_sort (input, logging=False, comp=compare_gt) :
 			print(" --> " + str(input) + "[(i+1)=" + str(i+1) + "] <- key=" + str(key))
 	return output
 
+
+def partial_insertion_sort (input, p, r, logging=False, comp=compare_gt) :
+	output = input 
+	for j in range(p, r) :
+		key = output[j]
+		i = j - 1
+		if logging == True : 
+			print(str(input) + " j=" + str(j) + " key=" + str(key))
+		while (i >= 0) & comp(output[i] , key)  : 
+			if logging == True : 
+				sys.stdout.write("\t" + str(input))
+			output[i + 1] = output[i]
+			if logging == True : 
+				print(" --> " + str(input) + "[(i+1)=" + str(i+1) + "] <- [i]=" + str(output[i]))
+			i = i - 1
+		if logging == True : 
+			sys.stdout.write("\t" + str(input))
+		output[i+1] = key
+		if logging == True : 
+			print(" --> " + str(input) + "[(i+1)=" + str(i+1) + "] <- key=" + str(key))
+	return output
+
 ################################################################################
 ## リニアサーチ : 該当しない場合は-1を返す
 
@@ -248,7 +270,7 @@ RIGHT:  [9, 38, 49, 57]
 '''
 
 ## 2.3-2 マージソート 番兵なし
-def merge_sort2 (input, logging=False) : 
+def merge_sort2 (input, logging=False, conv_insert=0) : 
 	# defining recursive function internally used for separation of input
 	def merge_sort_loop (input, p, r) : 
 		# defining merge function internally used to sort the small sets
@@ -280,14 +302,20 @@ def merge_sort2 (input, logging=False) :
 						i = i+1
 					break;
 		if p < r :
-			q = int((p + r) / 2)
-			merge_sort_loop (input, p, q)
-			if(logging == True) :
-				print("LEFT:\t" + str(input[p:q+1]))
-			merge_sort_loop (input, q+1, r)
-			if(logging == True) :
-				print("RIGHT:\t" + str(input[q+1:r+1]))
-			merge (input, p, q, r)
+			#pからrについて挿入ソートにするかマージソートにするか決める
+			if (r - p + 1) > conv_insert :
+				#マージソート続行
+				q = int((p + r) / 2)
+				merge_sort_loop (input, p, q)
+				if(logging == True) :
+					print("LEFT:\t" + str(input[p:q+1]))
+				merge_sort_loop (input, q+1, r)
+				if(logging == True) :
+					print("RIGHT:\t" + str(input[q+1:r+1]))
+				merge (input, p, q, r)
+			else :
+				#挿入ソートに切り替え
+				partial_insertion_sort(input, p, r)
 		
 	output = input 
 	merge_sort_loop (output, 0, len(output)-1)
@@ -382,11 +410,12 @@ def sum_search (input, x) :
 
 ### 章末問題 ###
 ## 2-1 
+#def merge_insertion_sort(input, k=20) :
+
+
+
 '''
-a. 
-b.
-c.
-d.
+
 '''
 
 
