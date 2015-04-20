@@ -34,12 +34,12 @@ def insertion_sort (input, logging=False, comp=compare_gt) :
 
 def partial_insertion_sort (input, p, r, logging=False, comp=compare_gt) :
 	output = input 
-	for j in range(p, r) :
+	for j in range(p, r+1) :
 		key = output[j]
 		i = j - 1
 		if logging == True : 
 			print(str(input) + " j=" + str(j) + " key=" + str(key))
-		while (i >= 0) & comp(output[i] , key)  : 
+		while (i >= p) & comp(output[i] , key)  : 
 			if logging == True : 
 				sys.stdout.write("\t" + str(input))
 			output[i + 1] = output[i]
@@ -316,7 +316,8 @@ def merge_sort2 (input, logging=False, conv_insert=0) :
 			else :
 				#挿入ソートに切り替え
 				partial_insertion_sort(input, p, r)
-		
+				print("partial insertion : " + str(input) + " p:" + str(p) + " r:" + str(r))
+				
 	output = input 
 	merge_sort_loop (output, 0, len(output)-1)
 
@@ -411,16 +412,49 @@ def sum_search (input, x) :
 ### 章末問題 ###
 ## 2-1 
 #def merge_insertion_sort(input, k=20) :
+'''
+>>> c2.merge_sort2([4,3,6,5,7,2,1,5,3,7,9,10,8,4],True, 4)
+partial insertion : [3, 4, 5, 6, 7, 2, 1, 5, 3, 7, 9, 10, 8, 4] p:0 r:3
+LEFT:	[3, 4, 5, 6]
+partial insertion : [3, 4, 5, 6, 1, 2, 7, 5, 3, 7, 9, 10, 8, 4] p:4 r:6
+RIGHT:	[1, 2, 7]
+left is done, putting :[7]
+LEFT:	[1, 2, 3, 4, 5, 6, 7]
+partial insertion : [1, 2, 3, 4, 5, 6, 7, 3, 5, 7, 9, 10, 8, 4] p:7 r:10
+LEFT:	[3, 5, 7, 9]
+partial insertion : [1, 2, 3, 4, 5, 6, 7, 3, 5, 7, 9, 4, 8, 10] p:11 r:13
+RIGHT:	[4, 8, 10]
+left is done, putting :[10]
+RIGHT:	[3, 4, 5, 7, 8, 9, 10]
+left is done, putting :[7, 8, 9, 10]
+[1, 2, 3, 3, 4, 4, 5, 5, 6, 7, 7, 8, 9, 10]
+'''
+'''
+a. 	長さkのリストの最悪実行時間はa(k**2) + bk + c 
+	それをn/k個のリストについて行うので、
+	θ( n/k( a(k**2) + bk + c ) )
+	= θ(nk)
 
+b. 	T(n/k) =  	{ 0 				n/k = 1のとき
+				{ 2T((n/k)/2) + n 	n/k = (2**p), p > 0 のとき
 
+	数学的帰納法で部分リストはθ((n/k)k(lg(n/k)))の最悪実行時間だということを証明してみる
+	n/k = 1のとき　n * lg 1 = 0のため明らかに成り立つ
+	n/k = mのときn lg(n/k) が成り立つとすると、(n/k)*2 = m + 1のとき、
+	T((n/k)*2) 	= 2T(n/k) + ((n/k)*2)*k
+				= 2(n lg(n/k) ) + 2n
+				= 2n(lg(n/k) + lg2)
+				= 2n(lg(2n/k))
+				= (2n/k)k(lg(2n/k))
 
+c,dについては割愛
 '''
 
+
+## 2-2 バブルソートの正当性
 '''
-
-
-
-
+a. ループ不変式として、初期条件、ループ内条件、終了条件を定式化する。
+b. 
 
 
 
